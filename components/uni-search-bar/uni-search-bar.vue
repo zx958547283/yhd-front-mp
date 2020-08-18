@@ -126,8 +126,12 @@
 		/* #endif */
 		flex-direction: row;
 		position: relative;
+		// width: 100%;
+		box-sizing: border-box;
 		padding: $uni-spacing-col-base;
 		background-color: $uni-bg-color;
+		z-index: 99999;
+		height: 110rpx;
 	}
 
 	.uni-searchbar__box {

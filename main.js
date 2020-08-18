@@ -14,6 +14,14 @@ import config from "./common/config/config.js";
 
 Vue.prototype.util = util;
 Vue.prototype.config = config;
+// audio
+// #ifndef H5
+var gaudioctx=uni.getBackgroundAudioManager()
+// #endif
+// #ifdef H5
+var gaudioctx=uni.createInnerAudioContext()
+// #endif
+Vue.prototype.$audio = gaudioctx
 
 Vue.config.productionTip = false
 App.mpType = 'app'

@@ -45,7 +45,7 @@
 		</view>
 		<!-- 理疗记录 -->
 		<view class="fa_cell" v-show="currentindex==2">
-			<tab-three :tabthree='tabthree'></tab-three>
+			<tab-three :tabthree='listArr'></tab-three>
 		</view>
 	</view>
 </template>
@@ -80,7 +80,8 @@ export default {
 			tabthree:[],
 			startIndex:1,
 			total:0,
-			mar:false
+			mar:false,
+			listArr:[]
 		}
 	},
 	onLoad(option) {
@@ -126,19 +127,6 @@ export default {
 	},
 	created() {
 	},
-	onReachBottom() {
-		if(this.currentindex==2){
-				if (this.total == 0) {
-						uni.showToast({
-							title: '没有更多数据了',
-							icon: 'none'
-						})
-						return
-					}
-					this.startIndex++
-					this.gethis()()
-		}
-	},
 	methods:{
 		sel(index){
 			this.currentindex = index
@@ -159,13 +147,54 @@ export default {
 			let requestPak = pakTool.createRequestPak();
 			requestPak.requestBody = {
 				member_id: this.add,
-				startIndex:this.startIndex,
-				pagesize:5
+				// startIndex:this.startIndex,
+				// pagesize:5
 			};
 			pakTool.request(this,"/madyApp/getMemberCareRecordByMember",requestPak).then(res=>{
 				const {data} = res
 				this.total = data.length
 				this.tabthree = [...this.tabthree,...data]
+				//方案归类
+				var listArr = [];
+					this.tabthree.forEach(function(item,index){
+						for(var i=0;i<listArr.length;i++){
+							// 对比相同的字段key，相同放入对应的数组
+							if(listArr[i].care_num == item.care_num){
+								listArr[i].listInfo.push({
+									care_plan_id: item.care_plan_id,
+									care_project_name: item.care_project_name,
+									care_num:item.care_num,
+									comment:item.comment,
+									id:item.id,
+									img_path:item.img_path,
+									member_id:item.member_id,
+									record_no:item.record_no,
+									record_time:item.record_time,
+									username:item.username
+								});
+								return;
+							}
+						}
+						// 第一次对比没有参照，放入参照
+						listArr.push({
+							care_num: item.care_num,
+							care_project_name: item.care_project_name,
+							username:item.username,
+							listInfo: [{
+								care_plan_id: item.care_plan_id,
+								care_project_name: item.care_project_name,
+								care_num:item.care_num,
+								comment:item.comment,
+								id:item.id,
+								img_path:item.img_path,
+								member_id:item.member_id,
+								record_no:item.record_no,
+								record_time:item.record_time,
+								username:item.username
+							}]
+						});	
+					});
+					this.listArr = listArr
 			})
 			
 		}
@@ -177,7 +206,7 @@ export default {
 	.box {
 		min-height: 100%;
 		background-color: #F7F7F7;
-		font-size: 32rpx;
+		font-size: 30rpx;
 		//账户信息部分
 		.arc_top{
 			height: 200rpx;
@@ -193,6 +222,7 @@ export default {
 				margin-top: 40rpx;
 				float: left;
 				 overflow: hidden;
+				 font-size: 36rpx;
 				image{
 					width: 100%;
 					height: 100%;
@@ -205,11 +235,12 @@ export default {
 				.row{
 					height: 65rpx;
 					.name {
-						font-size: 36rpx;
+						font-size: 34rpx;
 						font-weight: 700;
+						margin-right: 30rpx;
 					}
 					.sex{
-						margin: 0 30rpx;
+						margin-right: 30rpx;
 					}
 				}
 				.squ{
@@ -251,7 +282,7 @@ export default {
 					margin: 0 auto;
 					border-radius: 20rpx;
 					background-color: #C59A76;
-					margin-top: 20rpx;
+					margin-top: 15rpx;
 				}
 			}
 		}

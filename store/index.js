@@ -29,6 +29,23 @@ const store = new Vuex.Store({
 		isAdmin:uni.getStorageSync('isAdmin'),//是否是店长
 		form:{}, //添加客户模块的客户信息缓存
 		fix_form:{},//修改健康模块的记录
+		// audio
+		audio:{
+			src:'',
+			title:'',
+			singer:'',
+			coverImgUrl:''
+		},
+		playinfo:{
+			current:0, //当前时间
+			duration:0  ,//总时间
+			duration_value:0, //总长度
+			current_value:0 ,//当前长度
+			src:""
+		},
+		paused:true,
+		
+		n_pause:false  //意外断开状态 
 	},
 	mutations: {
 		login(state, provider) {
@@ -77,6 +94,40 @@ const store = new Vuex.Store({
 			// uni.setStorageSync('isAdmin','Y')
 			
 		},
+		// audio
+		setaudio(state,data){
+			state.audio=data;	
+		},
+		setnextaudio(state,data){
+			state.nextaudio=data
+		},
+		setplay(state,data){
+			if(data.current){
+				state.playinfo.current=data.current;	
+			}
+			if(data.duration){
+				state.playinfo.duration=data.duration;	
+			}
+			if(data.duration_value){
+				state.playinfo.duration_value=data.duration_value;	
+			}
+			if(data.current_value){
+				state.playinfo.current_value=data.current_value;	
+			}
+			if(data.current_value){
+				state.playinfo.current_value=data.current_value;	
+			}
+			if(data.src){
+				state.playinfo.src=data.src;	
+			}
+		},
+		setpause(state,data){
+			state.paused = data
+		},
+		set_n_pause(state,data){
+			state.n_pause = data
+		}
+
 	},
 	getters: { // store的计算属性,相当于页面中的computed
 		demo: state => {

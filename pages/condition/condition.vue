@@ -39,7 +39,7 @@
                 <!-- {{ project_list[0].name }} -->
                 元化灸
               </view>
-              <uni-icons type="arrowright" color="#858585" size="32"></uni-icons>
+              <!-- <uni-icons type="arrowright" color="#858585" size="30"></uni-icons> -->
             </view>
           </uni-list-item>
         </uni-list>
@@ -53,7 +53,7 @@
               <view style="font-weight: 700;">症状<text class="required">*</text></view>
               <view class="text">
               </view>
-              <uni-icons type="arrowright" color="#858585" size="32"></uni-icons>
+              <uni-icons type="arrowright" color="#858585" size="30"></uni-icons>
             </view>
           </uni-list-item>
           <view v-if="target.symptom.length != 0 ? true : false" style="padding: 0 30rpx;margin-top: 10rpx;">
@@ -165,7 +165,7 @@ import pakTool from "../../common/utils/utility.js";
 export default {
   components: {
     uniIcons,
-    uniPopup
+    uniPopup,
   },
   onLoad(option) {
     console.log(option);
@@ -247,7 +247,7 @@ export default {
       target: {
         symptom: [], //传回的名字 展示时用
         symptom_id: [], //传回的id 提交时用
-        remarks: ""
+        remarks: "",
       },
       // 检测是否是修改
       revise: false,
@@ -256,7 +256,7 @@ export default {
       disabled: false, // 防抖
       img_path: "",
       back: 0, //确认是否由保存跳转
-      mar: false
+      mar: false,
     };
   },
   methods: {
@@ -272,7 +272,7 @@ export default {
           "/pages/symptom/symptom?mady=" +
           this.target.symptom_id +
           "&name=" +
-          this.target.symptom
+          this.target.symptom,
       });
     },
     // 选择产品
@@ -309,7 +309,14 @@ export default {
       if (this.target.symptom_id.length == 0) {
         uni.showToast({
           icon: "none",
-          title: "请选择症状"
+          title: "请选择症状",
+        });
+        return false;
+      }
+      if (this.parts_sure.length == 0) {
+        uni.showToast({
+          icon: "none",
+          title: "请选择贴敷部位",
         });
         return false;
       }
@@ -331,11 +338,11 @@ export default {
         y_content: this.product_sure.toString(), //养
         points: this.acupoint_sure.toString(), //调
         care_plan_id: this.care_plan_id,
-        exc_key: this.exc_key
+        exc_key: this.exc_key,
       };
       pakTool
         .request(this, "/madyApp/saveMemberCarePlan", requestPak)
-        .then(res => {
+        .then((res) => {
           const { data, code, message } = res;
           // 生成
           if (code == 200) {
@@ -344,11 +351,11 @@ export default {
               var that = this;
               uni.showToast({
                 title: "数据上传成功",
-                success: function() {
+                success: function () {
                   uni.redirectTo({
-                    url: "/pages/plan/plan?add=" + that.add
+                    url: "/pages/plan/plan?add=" + that.add,
                   });
-                }
+                },
               });
               return;
             }
@@ -365,14 +372,14 @@ export default {
               prevPage.$vm.back = 1;
               // #endif
               uni.navigateBack({
-                delta: 1
+                delta: 1,
               });
               return;
             }
           } else {
             uni.showToast({
               title: "数据上传失败",
-              icon: "none"
+              icon: "none",
             });
             this.disabled = false;
           }
@@ -382,11 +389,11 @@ export default {
     getlist() {
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
-        member_id: this.add
+        member_id: this.add,
       };
       pakTool
         .request(this, "/madyApp/getStartCarePlan", requestPak)
-        .then(res => {
+        .then((res) => {
           const { data } = res;
           this.parts_list = data.bodyCare;
           this.product_list = data.goodsLis;
@@ -396,43 +403,46 @@ export default {
     // 获取穴位
     getpoint() {
       var list = [];
-      this.target.symptom.map(item => {
+      this.target.symptom.map((item) => {
         list.push(item);
       });
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
-        selectedMalady: list.toString()
+        selectedMalady: list.toString(),
       };
-      pakTool.request(this, "/madyApp/getMaladyPoint", requestPak).then(res => {
-        const { data } = res;
-        this.acupoint_list = data;
-      });
+      pakTool
+        .request(this, "/madyApp/getMaladyPoint", requestPak)
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":[{"img":"http://xiaode.oos-cn.ctyunapi.cn/20200720/png/yhd/upload/202007201521268735435.png","acupoint_name":"曲池","id":"0dd6b171-477f-4452-9169-0c7359704932","cure_content":"点按9次","content":"属手阳明大肠经。位于手肘关节弯曲凹陷处。主治：肩痛、腹痛腹泻、头痛眩晕、牙齿痛、目赤痛。"},{"img":"http://xiaode.oos-cn.ctyunapi.cn/20200720/png/yhd/upload/202007201519335713395.png","acupoint_name":"百会","id":"3","cure_content":"按揉9次","content":"属督脉。位于头顶正中线与两耳尖连线的交叉处。主治：头痛、耳鸣、中风、脱肛"},{"img":"http://xiaode.oos-cn.ctyunapi.cn/20200720/png/yhd/upload/202007201559318174680.png","acupoint_name":"涌泉","id":"353536b7-381d-4671-b5ab-5cca34b00018","cure_content":"按揉9次","content":"属足少阴肾经。位于足底前1/3的正中凹陷处。主治：头痛头晕、神志病患、便秘、小便不利"},{"img":"http://xiaode.oos-cn.ctyunapi.cn/20200720/png/yhd/upload/202007201529143463759.png","acupoint_name":"足三里","id":"4","cure_content":"点按9次","content":"属足阳明胃经。位于腿膝盖骨外侧下方凹陷（外膝眼）往下约4指（三寸）宽处。主治：胃肠病症、心悸气短、头晕、虚劳诸症"},{"img":"http://xiaode.oos-cn.ctyunapi.cn/20200720/png/yhd/upload/202007201520355421966.png","acupoint_name":"推桥弓","id":"892bba7d-7e81-45a8-b9d5-812ce57a567a","cure_content":"手掌推桥弓3次","content":"是指颈部翳风（耳垂后下缘的凹陷）至缺盆（锁骨上窝中央）的连线。"}]}
+          const { data } = res;
+          this.acupoint_list = data;
+        });
     },
     // 获取编辑之前的数据
     getedit() {
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
-        care_plan_id: this.care_plan_id
+        care_plan_id: this.care_plan_id,
       };
       pakTool
         .request(this, "/madyApp/getCarePlanDetail", requestPak)
-        .then(res => {
+        .then((res) => {
           console.log(res, 555);
           var maarr = [];
-          res.data.maladys.map(item => {
+          res.data.maladys.map((item) => {
             maarr.push(item.name);
           });
           this.target.symptom = maarr; //将症状名放入数组
-          res.data.maladys.map(item => {
+          res.data.maladys.map((item) => {
             this.target.symptom_id.push(item.id); //添加症状id
           });
-          res.data.points.map(item => {
+          res.data.points.map((item) => {
             this.acupoint_sure.push(item.id); //添加穴位id
           });
-          res.data.selectBuList.map(item => {
+          res.data.selectBuList.map((item) => {
             this.parts_sure.push(item.id); // 添加部位
           });
-          res.data.products.map(item => {
+          res.data.products.map((item) => {
             // 添加产品
             this.product_sure.push(item.id);
           });
@@ -440,25 +450,25 @@ export default {
           // var arr = []
           let requestPak = pakTool.createRequestPak();
           requestPak.requestBody = {
-            selectedMalady: maarr.toString()
+            selectedMalady: maarr.toString(),
           };
           pakTool
             .request(this, "/madyApp/getMaladyPoint", requestPak)
-            .then(res => {
+            .then((res) => {
               console.log(res.data, 88888888); //所有穴位
-              res.data.map(item => {
+              res.data.map((item) => {
                 this.acupoint_list.push(item);
               });
             });
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="less" scoped>
 .condition {
-  font-size: 32rpx;
+  font-size: 30rpx;
   min-height: 100%;
 
   // 用户信息
@@ -477,7 +487,7 @@ export default {
       margin-top: 40rpx;
       float: left;
       overflow: hidden;
-
+      font-size: 34rpx;
       image {
         width: 100%;
         height: 100%;
@@ -493,12 +503,13 @@ export default {
         height: 65rpx;
 
         .name {
-          font-size: 36rpx;
+          font-size: 34rpx;
           font-weight: 700;
+          margin-right: 30rpx;
         }
 
         .sex {
-          margin: 0 30rpx;
+          margin-right: 30rpx;
         }
       }
 
@@ -603,7 +614,7 @@ export default {
 
             .choice_radio {
               flex-basis: 50%;
-              margin: 15rpx 0;
+              margin: 20rpx 0;
 
               image {
                 width: 36rpx;
@@ -622,6 +633,7 @@ export default {
                 margin-left: 30rpx;
               }
             }
+
             // 选择部位
             .all_sel {
               display: flex;
@@ -634,13 +646,16 @@ export default {
                 text-align: center;
                 border-radius: 40rpx;
                 line-height: 64rpx;
-                margin: 0 8rpx 30rpx;
+                // margin: 0 8rpx 30rpx;
+                margin: 40rpx 20rpx 0 0;
                 box-sizing: border-box;
               }
+
               .none {
                 color: #c59a76;
                 border: 2rpx solid #c59a76;
               }
+
               .active {
                 color: white;
                 background-color: #c59a76;
@@ -694,7 +709,7 @@ export default {
     }
 
     .sus_txt {
-      font-size: 36rpx;
+      font-size: 34rpx;
       color: #c59a76;
       position: absolute;
       top: 40%;

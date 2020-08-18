@@ -363,45 +363,50 @@
 					   this.form.address = m.address
 					   this.form.mail = m.email
 					  					// 备注信息
-					   this.family = data.healthHistory.family;
-					   this.operation = data.healthHistory.operation;
-					   this.remarks = data.healthHistory.comment;
-					   this.others = data.healthHistory.others;
-					   this.remnant_family = data.healthHistory.family.length;
-					   this.remnant_operation = data.healthHistory.operation.length;
-					   this.remnant_remarks = data.healthHistory.comment.length;
-					   this.remnant_others = data.healthHistory.others.length;
+						 if(data.healthHistory){
+							 this.family = data.healthHistory.family;
+							 this.operation = data.healthHistory.operation;
+							 this.remarks = data.healthHistory.comment;
+							 this.others = data.healthHistory.others;
+							 this.remnant_family = data.healthHistory.family.length;
+							 this.remnant_operation = data.healthHistory.operation.length;
+							 this.remnant_remarks = data.healthHistory.comment.length;
+							 this.remnant_others = data.healthHistory.others.length;
+							 // 过敏史判定
+							 if(data.healthHistory.irritability==''){
+							 					 this.allergy_sure = 0
+							 }else{
+							 					 this.allergy_sure = 1;
+							 					 this.allergy = data.healthHistory.irritability
+							 }
+							 // 治疗史判定
+							 if(data.healthHistory.cure==''){
+							 					 this.treat_sure = 0
+							 }else{
+							 					 this.treat_sure = 1;
+							 					 this.treat = data.healthHistory.cure
+							 }
+							 // 药物使用史判定
+							 if(data.healthHistory.medicinal==''){
+							 					 this.medicinal_sure = 0
+							 }else{
+							 					 this.medicinal_sure = 1;
+							 					 this.medicinal = data.healthHistory.medicinal
+							 }
+							 
+							 //其他病史判断
+							 if(data.healthHistory.other_ill!=''){
+							 					 this.ill_sure.push(20200609)
+							 					 this.other_ill = data.healthHistory.other_ill
+							 }
+							 }
 					   //选择框
-					   data.illHistory.map(item=>{
-					  					  this.ill_sure.push(item.id)
-					   })
-					  // 过敏史判定
-					  if(data.healthHistory.irritability==''){
-					  					 this.allergy_sure = 0
-					  }else{
-					  					 this.allergy_sure = 1;
-					  					 this.allergy = data.healthHistory.irritability
-					  }
-					  // 治疗史判定
-					  if(data.healthHistory.cure==''){
-					  					 this.treat_sure = 0
-					  }else{
-					  					 this.treat_sure = 1;
-					  					 this.treat = data.healthHistory.cure
-					  }
-					  // 药物使用史判定
-					  if(data.healthHistory.medicinal==''){
-					  					 this.medicinal_sure = 0
-					  }else{
-					  					 this.medicinal_sure = 1;
-					  					 this.medicinal = data.healthHistory.medicinal
-					  }
-					  
-					  //其他病史判断
-					  if(data.healthHistory.other_ill!=''){
-					  					 this.ill_sure.push(20200609)
-					  					 this.other_ill = data.healthHistory.other_ill
-					  }
+					   if(data.illHistory){
+						   data.illHistory.map(item=>{
+						   	 this.ill_sure.push(item.id)
+						   })
+					   }
+					
 				  })
 			     
 			    },
@@ -418,7 +423,7 @@
 
 <style lang="less" scoped>
 	.tabone{
-		font-size: 32rpx;
+		font-size: 30rpx;
 		.tabone_top{background-color: #FFFFFF;}
 		.tabone_mid{
 			padding: 30rpx;
@@ -524,6 +529,7 @@
 						color: #333333;
 						margin: 50% auto 0;
 						text-align: center;
+						font-size: 34rpx;
 					}
 					.btm {
 						display: flex;
@@ -531,14 +537,24 @@
 						padding: 0 30rpx;
 						margin-top: 96rpx;
 						.yes{
-							padding: 18rpx 60rpx;
+							// padding: 18rpx 60rpx;
+							width: 237rpx;
+							height: 82rpx;
+							line-height: 82rpx;
+							text-align: center;
+							font-size: 34rpx;
 							display: inline-block;
 							background-color: #C59A76;
 							color: white;
 							border-radius: 44rpx;
 						}
 						.no {
-							padding: 18rpx 60rpx;
+							// padding: 18rpx 60rpx;
+							width: 237rpx;
+							height: 82rpx;
+							line-height: 82rpx;
+							text-align: center;
+							font-size: 34rpx;
 							background-color: #FFFFFF;
 							display: inline-block;
 							color: #C59A76;

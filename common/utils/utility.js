@@ -2,14 +2,27 @@ import config from "../config/config.js";
 
 export default {
 	createRequestPak: function() {
-		return {
-			platform: "wx",
-			requestUser: "1",
-			requestBody: {},
-			// token: "505d644c-6270-43b4-ab4b-4a56dec8da73",
-			token:'aee8fc94-fe02-4f9e-a659-fb37a0fda2ec',
-			sign: "aaaa-bbbb-cccc-ddd"
-		};
+		const dealerDeptId = uni.getStorageSync('dealerDeptId')
+		if(dealerDeptId==''){
+			return {
+				platform: "wx",
+				requestUser: "1",
+				requestBody: {},
+				// token: "505d644c-6270-43b4-ab4b-4a56dec8da73",
+				token:'aee8fc94-fe02-4f9e-a659-fb37a0fda2ec',
+				sign: "aaaa-bbbb-cccc-ddd"
+			};
+		}else {
+			return {
+				platform: "wx",
+				requestUser: "1",
+				requestBody: {},
+				// token: "505d644c-6270-43b4-ab4b-4a56dec8da73",
+				token:'aee8fc94-fe02-4f9e-a659-fb37a0fda2ec',
+				sign: "aaaa-bbbb-cccc-ddd",
+				dealerDeptId: dealerDeptId
+			};
+		}
 	},
 	showLoading: function(title) {
 		if (this.isNullOrWhiteSpace(title)) {

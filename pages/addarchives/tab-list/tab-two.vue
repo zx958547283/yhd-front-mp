@@ -94,11 +94,23 @@
 		},
 		watch: {
 			tabtwo() {
-				this.p_list = this.tabtwo.xueyaList
+				this.tabtwo.xueyaList.map(item=>{
+					if(item.content!=''){
+						this.p_list.push(item)
+					}
+				})
 				this.press_list = this.p_list.slice(0, 3)
-				this.o_list = this.tabtwo.xueyangList
+				this.tabtwo.xueyangList.map(item=>{
+					if(item.content!=''){
+						this.o_list.push(item)
+					}
+				})
 				this.oxygen_list = this.o_list.slice(0, 3)
-				this.s_list = this.tabtwo.xuetangList
+				this.tabtwo.xuetangList.map(item=>{
+					if(item.content!=''){
+						this.s_list.push(item)
+					}
+				})
 				this.sugar_list = this.s_list.slice(0, 3)
 			}
 		},
@@ -205,7 +217,7 @@
 
 		.none {
 			padding: 50rpx;
-
+			font-size: 30rpx;
 			.img {
 				width: 550rpx;
 				height: 406rpx;

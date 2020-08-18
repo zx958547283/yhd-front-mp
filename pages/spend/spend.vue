@@ -156,7 +156,7 @@ export default {
 <style lang="less" scoped>
 .box {
   min-height: 100%;
-  font-size: 32rpx;
+  font-size: 30rpx;
   background-color: #f7f7f7;
 
   .top_bgc {
@@ -188,7 +188,7 @@ export default {
         margin-top: 40rpx;
         float: left;
         overflow: hidden;
-
+		font-size: 36rpx;
         image {
           width: 100%;
           height: 100%;
@@ -204,12 +204,13 @@ export default {
           height: 65rpx;
 
           .name {
-            font-size: 36rpx;
+            font-size: 34rpx;
             font-weight: 700;
+            margin-right: 30rpx;
           }
 
           .sex {
-            margin: 0 30rpx;
+            margin-right: 30rpx;
           }
         }
 
@@ -248,7 +249,7 @@ export default {
       justify-content: space-around;
       background: #ffffff;
       border-radius: 0 0 20rpx 20rpx;
-
+		width: 100%;
       .btm_num {
         flex: 0 0 25%;
 
@@ -274,7 +275,7 @@ export default {
   display: flex;
   justify-content: space-around;
   background-color: #fff;
-
+	font-size: 32rpx;
   .tab_one {
     color: #c59a76;
 
@@ -284,7 +285,7 @@ export default {
       margin: 0 auto;
       border-radius: 20rpx;
       background-color: #c59a76;
-      margin-top: 20rpx;
+      margin-top: 15rpx;
     }
   }
 }

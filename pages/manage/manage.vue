@@ -1,489 +1,412 @@
 <template>
-	<view class="box">
-		<!-- 顶部搜索-->
-		<uni-search-bar @ser='ser' placeholder="姓名/电话" :radius="100" :cancelButton="none" @confirm="search"></uni-search-bar>
+  <view class="box">
+    <!-- 顶部搜索-->
+    <!-- <uni-search-bar @ser='ser' placeholder="姓名/电话" :radius="100" :cancelButton="none" @confirm="search"></uni-search-bar> -->
+    <view class="tab" :style="isAdmin=='Y'?'padding: 30rpx 100rpx':'padding:30rpx 180rpx'">
+      <view :class="currenttab == index?'tab_one':''" v-for="(item,index) in tablist" :key='index' @click="seltab(index)">
+        {{ item }}
+        <view class="line" v-if="currenttab == index"></view>
+      </view>
+    </view>
+    <swiper :duration="1000" :style="{ height: hei + 'px;'}" @change="swiperChange" :current="currenttab" duration="300">
+      <swiper-item v-if="isAdmin==='Y'">
+        <!-- 门店客户 -->
+        <txl :total="one_total" :isAdmin="true" @ev="evFunc" :datas="tabone" color="#F2F2F2" :index="true" name="employeeName" v-show="currenttab==one"></txl>
+      </swiper-item>
+      <swiper-item>
+        <!-- 我的客户 -->
+        <txl :total="two_total" @collection='collection' @ev="evFunc" :datas="tabtwo" color="#F2F2F2" :index="true" name="employeeName" v-show="currenttab==two"></txl>
+      </swiper-item>
+      <swiper-item>
+        <!-- 收藏客户 -->
+        <txl :total='three_total' @collection='collection' @ev="evFunc" :datas="tabthree" color="#F2F2F2" :index="true" name="employeeName" v-show="currenttab==three"></txl>
+      </swiper-item>
+    </swiper>
 
-		<!-- 店长展示 -->
-		<view class="owner" v-if="isAdmin=='Y'">
-			<!-- tab选项区域 -->
-			<view class="tab">
-				<view :class="currenttab===index?'tab_one':''" v-for="(item,index) in tablist" :key='index' @click="seltab(index)">
-					{{ item }}
-				</view>
-			</view>
-			<!-- tab内容部分 -->
-			<view class="tab_main" v-show="currenttab==0">
-				<view class="amount" v-if="alllist.length!=0">
-					共{{ two_total }}个客户
-				</view>
-				<view class="main_one" v-for="item in alllist" :key='item.id' @click="getdetail(item.id)">
-					<view class="cir">
-						<image :src="item.customer_header" mode="" v-if="item.customer_header!=''"></image>
-						<view v-if="item.customer_header==''" style="line-height: 100rpx;text-align: center; background:#F2F2F2; font-weight:700;">
-							{{item.customerName.substr(0,1)}}
-						</view>
-					</view>
-					<view class="name">
-						<view>
-							{{ item.customerName }}
-						</view>
-						<view style="font-weight: 400;">
-							{{ item.phone }}
-						</view>
-					</view>
-					<view class="doc_name">
-						<text style="display: inline-block; width: 240rpx;">健康专员：{{item.employeeName}}</text>
-					</view>
-					<view class="point">
-						<image src="../../static/images/cher.png" mode=""></image>
-					</view>
-				</view>
-				<view class="none" v-if="alllist.length==0">
-					<view class="img">
-						<image src="../../static/images/none.png" mode=""></image>
-					</view>
-					<view class="txt">
-						暂无客户
-					</view>
-				</view>
-			</view>
-			<view class="tab_main" v-show="currenttab==1">
-				<view class="amount" v-if="clist.length!=0">
-					共{{ one_total }}个客户
-				</view>
-				<view class="main_one" v-for="item in clist" :key='item.member_id' v-if="clist.length!=0" @click="getdetail(item.member_id)">
-					<view class="cir">
-						<image :src="item.customer_header" mode="" v-if="item.customer_header!=''"></image>
-						<view v-if="item.customer_header==''" style="line-height: 100rpx;text-align: center; background:#F2F2F2; font-weight:700;">
-							{{item.customerName.substr(0,1)}}
-						</view>
-					</view>
-					<view class="name">
-						{{ item.customerName }}
-					</view>
-					<view class="phone">
-						<text>{{ item.phone }}</text>
-					</view>
-					<view class="point">
-						<image src="../../static/images/cher.png" mode=""></image>
-					</view>
-				</view>
-				<view class="none" v-if="clist.length==0">
-					<view class="img">
-						<image src="../../static/images/none.png" mode=""></image>
-					</view>
-					<view class="txt">
-						暂无客户
-					</view>
-				</view>
-			</view>
-		</view>
-
-		<!-- 店员展示 -->
-		<!--  -->
-		<view class="tab_main"  v-if="isAdmin=='N'">
-			<view class="amount" v-if="clist.length!=0">
-				共{{ one_total }}个客户
-			</view>
-			<view class="main_one" v-for="(item,index) in clist" :key='index' v-if="clist.length!=0" @click="getdetail(item.member_id)">
-				<view class="cir">
-					<image :src="item.customer_header" mode="" v-if="item.customer_header!=''" ></image>
-					<view v-if="item.customer_header==''" style="line-height: 100rpx;text-align: center; background:#F2F2F2; font-weight:700;">
-						{{item.customerName.substr(0,1)}}
-					</view>
-				</view>
-				<view class="name">
-					{{ item.customerName }}
-				</view>
-				<view class="phone">
-					<text>{{ item.phone }}</text>
-				</view>
-				<view class="point">
-					<image src="../../static/images/cher.png" mode=""></image>
-				</view>
-			</view>
-			<view class="none" v-if="clist.length==0">
-				<view class="img">
-					<image src="../../static/images/none.png" mode=""></image>
-				</view>
-				<view class="txt">
-					暂无客户
-				</view>
-			</view>
-		</view>
-
-	</view>
+  </view>
 </template>
 
 <script>
-	import uniSearchBar from "@/components/uni-search-bar/uni-search-bar.vue";
-	import pakTool from "@/common/utils/utility.js"; // 调取接口
-	export default {
-		components: {
-			uniSearchBar
-		},
-		onLoad(option) {
-			// 判断是否是店长
-			this.isAdmin = uni.getStorageSync('isAdmin');
-			// this.isAdmin = 'Y'
-			if (option.index) {
-				this.currenttab = Number(option.index);
-			}
-			
-		},
-		onShow() {
-			this.getShowUser()
-			if(this.isAdmin=='Y'){
-				this.getShowAll()
-			}
-		},
-		//下拉刷新
-		onPullDownRefresh() {
-			if(this.isAdmin=='N'){
-				// this.getShowUser()
-				this.getShowUser_down()
-			}else if(this.isAdmin=='Y'&&this.currenttab==1){
-				// this.getShowUser()
-				this.getShowUser_down()
-			}else{
-				// this.getShowAll()
-				this.getShowAll_down()
-				}
-		},
-		//上拉加载
-		onReachBottom() {
-			// 如果是店员 下拉直接加载
-			if(this.isAdmin=='N'){
-				// 如果总数等于已加载的数量
-				if(this.one_total==this.clist.length){
-					uni.showToast({
-						title:'没有更多客户了',
-						icon:'none'
-					})
-					return
-				}
-				this.startIndex++;
-				this.getUser();
-			}
-			// 如果是店长 并且在我的客户页
-			if(this.isAdmin=='Y'&&this.currenttab==1){
-				if(this.one_total==this.clist.length){
-					uni.showToast({
-						title:'没有更多客户了',
-						icon:'none'
-					})
-					return
-				}
-				this.startIndex++;
-				this.getUser();
-			}
-			// 如果是店长 并且在首页
-			if(this.isAdmin=='Y'&&this.currenttab==0){
-				if(this.two_total==this.alllist.length){
-					uni.showToast({
-						title:'没有更多客户了',
-						icon:'none'
-					})
-					return
-				}
-				this.all_startIndex++
-				this.getAll()
-			}
-		},
-		data() {
-			return {
-				isAdmin: "", //判断是否是店长
-				tablist: ["全部", "我的客户"], //导航栏标签
-				currenttab: 0, //当前选中的tab
-				clist: [],
-				pageIndex: 0,
-				totalRows: 0,
-				amount: 0,
-				searchValue: "",
-				startIndex:1,
-				pagesize:10,
-				tabtwo:[],//店长的我的客户
-				alllist:[],//所有客户
-				all_startIndex:1,//店长的分页
-				one_total:'',//我的客户总量
-				two_total:''//店长 全部客户总量
-			};
-		},
-		methods: {
-			search(e) {
-				//搜索 0如果为空则显示空的背景图
-				if(this.isAdmin=='N'){
-					if (e.value) {
-						this.searchValue = e.value;
-					} else {
-						this.searchValue = "";
-					}
-					this.getShowUser()
-				}
-				if(this.isAdmin=='Y'&&this.currenttab==0){
-					this.searchValue = e.value;
-					this.getShowAll()
-				}
-				if(this.isAdmin=='Y'&&this.currenttab==1){
-					this.searchValue = e.value;
-					this.getShowUser()
-				}
-				
-			},
-			//
-			ser(e){
-				if(e){
-					if(this.isAdmin=='N'){
-						this.searchValue = "";
-						this.getShowUser()
-					}
-					if(this.isAdmin=='Y'&&this.currenttab==0){
-						this.searchValue = "";
-						this.getShowAll()
-					}
-					if(this.isAdmin=='Y'&&this.currenttab==1){
-						this.searchValue = "";
-						this.getShowUser()
-					}
-				}
-			},
-			//切换tab栏
-			seltab(index) {
-				this.currenttab = index;
-			},
-			//跳转详情页
-			getdetail(id) {
-				uni.navigateTo({
-					url: "/pages/detail/detail?add=" + id + '&manage=1'
-				});
-			},
-			// 获取用户数据
-			getUser() {
-				let requestPak = pakTool.createRequestPak();
-				requestPak.requestBody = {
-					admin_user_id: uni.getStorageSync('admin_user_id'), //员工id
-					search_key: this.searchValue, // 条件
-					startIndex: this.startIndex, // 开始页面
-					pagesize: this.pagesize // 每页条数
-				};
-				// 测试用
-				pakTool.request(this,"/madyApp/getMineCustomer",requestPak).then(res=>{
-					const { data } = res
-					 this.clist = [...this.clist,...data.customerList];
-					 this.one_total = data.customerCnt;
-				})
-			},
-			getShowUser(){
-				this.startIndex=1
-				let requestPak = pakTool.createRequestPak();
-				requestPak.requestBody = {
-					admin_user_id: uni.getStorageSync('admin_user_id'), //员工id
-					search_key: this.searchValue, // 条件
-					startIndex: this.startIndex, // 开始页面
-					pagesize: this.pagesize // 每页条数
-				};
-				// 测试用
-				pakTool.request(this,"/madyApp/getMineCustomer",requestPak).then(res=>{
-					const { data } = res
-					this.clist = []
-					 this.clist = [...this.clist,...data.customerList];
-					 this.one_total = data.customerCnt;
-				})
-			},
-			//获取店长数据
-			getAll() {
-				let requestPak = pakTool.createRequestPak();
-				requestPak.requestBody = {
-					admin_user_id: uni.getStorageSync('admin_user_id'), //员工id
-					search_key: this.searchValue, // 条件
-					startIndex: this.all_startIndex, // 开始页面
-					pagesize: this.pagesize // 每页条数
-				};
-				// 测试用
-				pakTool.request(this,"/madyApp/getAllCustomer",requestPak).then(res=>{
-					const { data } = res
-					// 所有店员
-					this.alllist = [...this.alllist,...data.customerList]
-					this.two_total = data.customerCnt
-				})
-				
-			},
-			getShowAll(){
-				this.all_startIndex=1
-				let requestPak = pakTool.createRequestPak();
-				requestPak.requestBody = {
-					admin_user_id: uni.getStorageSync('admin_user_id'), //员工id
-					search_key: this.searchValue, // 条件
-					startIndex: this.all_startIndex, // 开始页面
-					pagesize: this.pagesize // 每页条数
-				};
-				// 测试用
-				pakTool.request(this,"/madyApp/getAllCustomer",requestPak).then(res=>{
-					const { data } = res
-					// 所有店员
-					this.alllist= []
-					this.alllist = [...this.alllist,...data.customerList]
-					this.two_total = data.customerCnt
-				})
-			},
-			// 下拉刷新
-			getShowAll_down(){
-				this.all_startIndex=1
-				let requestPak = pakTool.createRequestPak();
-				requestPak.requestBody = {
-					admin_user_id: uni.getStorageSync('admin_user_id'), //员工id
-					search_key: this.searchValue, // 条件
-					startIndex: this.all_startIndex, // 开始页面
-					pagesize: this.pagesize // 每页条数
-				};
-				// 测试用
-				pakTool.request(this,"/madyApp/getAllCustomer",requestPak).then(res=>{
-					const { data,code } = res
-					// 所有店员
-					this.alllist= []
-					this.alllist = [...this.alllist,...data.customerList]
-					this.two_total = data.customerCnt
-					if(code==200){
-						wx.stopPullDownRefresh();
-					}
-				})
-			},
-			getShowUser_down(){
-				this.startIndex=1
-				let requestPak = pakTool.createRequestPak();
-				requestPak.requestBody = {
-					admin_user_id: uni.getStorageSync('admin_user_id'), //员工id
-					search_key: this.searchValue, // 条件
-					startIndex: this.startIndex, // 开始页面
-					pagesize: this.pagesize // 每页条数
-				};
-				// 测试用
-				pakTool.request(this,"/madyApp/getMineCustomer",requestPak).then(res=>{
-					const { data,code } = res
-					this.clist = []
-					 this.clist = [...this.clist,...data.customerList];
-					 this.one_total = data.customerCnt;
-					 if(code==200){
-					 	wx.stopPullDownRefresh();
-					 }
-				})
-			},
-		}
-	};
+import uniSearchBar from "@/components/uni-search-bar/uni-search-bar.vue";
+import pakTool from "@/common/utils/utility.js"; // 调取接口
+import txl from "@/components/yt-txl/index.vue";
+export default {
+  components: {
+    uniSearchBar,
+    txl,
+  },
+  onLoad(option) {
+    if (option.index) {
+      this.currenttab = option.index;
+    }
+    this.isAdmin = uni.getStorageSync("isAdmin");
+    var that = this;
+    uni.getSystemInfo({
+      success(res) {
+        that.phoneHeight = res.windowHeight;
+        // console.log();
+        // 计算组件的高度
+        let view = uni.createSelectorQuery().select(".tab");
+        // console.log(view)
+        view
+          .boundingClientRect((data) => {
+            let navHeight = data.height;
+            // console.log(res.windowHeight)
+            console.log(navHeight);
+            that.hei = that.phoneHeight - navHeight;
+            console.log(that.hei, "hei");
+          })
+          .exec();
+      },
+    });
+  },
+  onShow() {
+    if (this.isAdmin == "N") {
+      this.tablist = ["我的客户", "收藏客户"];
+      this.one = "";
+      this.two = 0;
+      this.three = 1;
+    }
+    this.myUser();
+    this.colUser();
+    if (this.isAdmin == "Y") {
+      this.allUser();
+    }
+  },
+  data() {
+    return {
+      phoneHeight: "",
+      hei: "",
+      tabone: [],
+      tabtwo: [],
+      tabthree: [],
+      isAdmin: "", //判断是否是店长
+      tablist: ["门店客户", "我的客户", "收藏客户"], //导航栏标签
+      currenttab: 0, //当前选中的tab
+      clist: [],
+      pageIndex: 0,
+      totalRows: 0,
+      amount: 0,
+      searchValue: "",
+      startIndex: 1,
+      pagesize: 10,
+      alllist: [], //所有客户
+      all_startIndex: 1, //店长的分页
+      two_total: 0, //我的客户总量
+      one_total: 0, //店长 全部客户总量
+      three_total: 0, //收藏客户总量
+      one: 0,
+      two: 1,
+      three: 3,
+    };
+  },
+  methods: {
+    swiperChange(e) {
+      console.log(e);
+      this.currenttab = e.detail.current;
+    },
+    //切换tab栏
+    seltab(index) {
+      this.currenttab = index;
+      console.log(index);
+    },
+    //跳转详情页
+    getdetail(id) {
+      uni.navigateTo({
+        url: "/pages/detail/detail?add=" + id + "&manage=1",
+      });
+    },
+    // 获取我的客户
+    myUser() {
+      this.startIndex = 1;
+      let requestPak = pakTool.createRequestPak();
+      requestPak.requestBody = {
+        admin_user_id: uni.getStorageSync("admin_user_id"), //员工id
+        search_key: this.searchValue, // 条件
+        startIndex: this.startIndex, // 开始页面
+        pagesize: this.pagesize, // 每页条数
+      };
+      pakTool
+        .request(this, "/madyApp/getMineCustomer", requestPak)
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":{"customerList":[{"member_id":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","employeeName":"B1健康专员","customer_header":"","phone":"13777777985","customerName":"完整数据","is_top":1}],"customerCnt":1}}
+          this.tabtwo = [];
+          data.customerList.map((item, index) => {
+            this.tabtwo.push({
+              employeeId: item.member_id,
+              employeeName: item.customerName,
+              departmentName: item.phone,
+              isTop: item.is_top,
+              customer_header: item.customer_header,
+            });
+          });
+          this.two_total = data.customerCnt;
+        });
+    },
+    // 获取收藏数据
+    colUser() {
+      this.startIndex = 1;
+      let requestPak = pakTool.createRequestPak();
+      requestPak.requestBody = {
+        admin_user_id: uni.getStorageSync("admin_user_id"),
+      };
+      pakTool
+        .request(this, "/madyApp/getMineCollect", requestPak)
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":{"customerList":[{"member_id":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","employeeName":"B1健康专员","customer_header":"","phone":"13777777985","customerName":"完整数据","is_top":1}],"customerCnt":1}}
+          const { data } = res;
+          this.tabthree = [];
+          data.customerList.map((item, index) => {
+            this.tabthree.push({
+              employeeId: item.member_id,
+              employeeName: item.customerName,
+              departmentName: item.phone,
+              isTop: item.is_top,
+              customer_header: item.customer_header,
+            });
+          });
+          this.three_total = data.customerCnt;
+        });
+    },
+
+    //获取门店客户数据
+    allUser() {
+      let requestPak = pakTool.createRequestPak();
+      requestPak.requestBody = {
+        admin_user_id: uni.getStorageSync("admin_user_id"), //员工id
+        search_key: this.searchValue, // 条件
+        startIndex: this.all_startIndex, // 开始页面
+        pagesize: this.pagesize, // 每页条数
+      };
+      pakTool
+        .request(this, "/madyApp/getAllCustomer", requestPak)
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":{"customerList":[{"employeeName":"B1健康专员","customer_header":"","phone":"13777777985","id":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","customerName":"完整数据","is_top":1},{"employeeName":"B1健康专员","customer_header":"","phone":"13999999999","id":"95d36d1d-ecd7-4a27-ba2d-b78286af3b15","customerName":"测试","is_top":1}],"customerCnt":2}}
+          const { data } = res;
+          this.tabone = [];
+          data.customerList.map((item, index) => {
+            this.tabone.push({
+              employeeId: item.id,
+              employeeName: item.customerName,
+              departmentName: item.phone,
+              isTop: item.is_top,
+              customer_header: item.customer_header,
+            });
+          });
+          this.one_total = data.customerCnt;
+        });
+    },
+    evFunc(e) {
+      uni.navigateTo({
+        url: "/pages/detail/detail?add=" + e.employeeId,
+      });
+    },
+
+    // 置顶/取消置顶
+    settop(istop, id) {
+      console.log(111);
+      // 如果没有置顶 点击则置顶
+      var that = this;
+      if (istop == 0) {
+        let requestPak = pakTool.createRequestPak();
+        requestPak.requestBody = {
+          isTop: 1,
+          member_id: id,
+        };
+        pakTool.request(this, "madyApp/setTop", requestPak).then((res) => {
+          if (res.code == 200) {
+            uni.showToast({
+              title: "收藏成功",
+              success: function () {
+                that.myUser();
+                that.colUser();
+                if (that.isAdmin == "Y") {
+                  that.allUser();
+                }
+              },
+            });
+            // this.getShowUser()
+            // if(this.isAdmin=='Y'){
+            // 	this.getShowAll()
+            // }
+          }
+        });
+      } else {
+        let requestPak = pakTool.createRequestPak();
+        requestPak.requestBody = {
+          isTop: 0,
+          member_id: id,
+        };
+        pakTool.request(this, "madyApp/setTop", requestPak).then((res) => {
+          if (res.code == 200) {
+            uni.showToast({
+              title: "取消收藏成功",
+              success: function () {
+                that.myUser();
+                that.colUser();
+                if (that.isAdmin == "Y") {
+                  that.allUser();
+                }
+              },
+            });
+          }
+        });
+      }
+    },
+    collection(val) {
+      console.log(val);
+      this.settop(val.top, val.id);
+    },
+  },
+};
 </script>
 
 <style lang="less" scoped>
-	.box {
-		font-size: 32rpx;
-		min-height: 100%;
-		// padding: 0 38rpx 38rpx 38rpx;
-		background-color: #f7f7f7;
+.box {
+  font-size: 30rpx;
+  min-height: 100%;
+  // padding: 0 38rpx 38rpx 38rpx;
+  background-color: #f7f7f7;
+  .hei {
+    height: calc(100vh - 64rpx);
+  }
+  .tab {
+    // padding: 30rpx 180rpx;
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    height: 64rpx;
+    .tab_one {
+      // padding-bottom: 20rpx;
+      color: #c59a76;
+      // border-bottom: 5rpx solid #c59a76;
+      .line {
+        height: 10rpx;
+        width: 55rpx;
+        margin: 0 auto;
+        border-radius: 20rpx;
+        background-color: #c59a76;
+        margin-top: 15rpx;
+      }
+    }
+  }
 
-		.tab {
-			padding: 30rpx 180rpx;
-			display: flex;
-			justify-content: space-between;
-			background-color: white;
+  .tab_main {
+    padding: 30rpx;
 
-			.tab_one {
-				padding-bottom: 20rpx;
-				color: #c59a76;
-				border-bottom: 5rpx solid #c59a76;
-			}
-		}
+    .amount {
+      color: #696969;
+      text-align: center;
+      padding-bottom: 30rpx;
+    }
 
-		.tab_main {
-			padding: 30rpx;
+    .main_one {
+      box-sizing: border-box;
+      height: 140rpx;
+      background-color: #ffffff;
+      padding: 20rpx;
+      position: relative;
+      margin-bottom: 20rpx;
+      border-radius: 10rpx;
 
-			.amount {
-				color: #696969;
-				text-align: center;
-				padding-bottom: 30rpx;
-			}
+      .cir {
+        width: 100rpx;
+        height: 100rpx;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        overflow: hidden;
+        image {
+          width: 100%;
+          height: 100%;
+        }
+      }
 
-			.main_one {
-				box-sizing: border-box;
-				height: 140rpx;
-				background-color: #ffffff;
-				padding: 20rpx;
-				position: relative;
-				margin-bottom: 20rpx;
-				border-radius: 10rpx;
+      .name {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        left: 150rpx;
+        font-weight: 700;
+      }
 
-				.cir {
-					width: 100rpx;
-					height: 100rpx;
-					border-radius: 50%;
-					position: absolute;
-					top: 50%;
-					transform: translate(0, -50%);
-					overflow: hidden;
-					image {
-						width: 100%;
-						height: 100%;
-					}
-				}
+      .doc_name {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        right: 65rpx;
+        font-weight: 700;
+        font-size: 30rpx;
+        .settop {
+          display: inline-block;
+          float: right;
+          border: 2rpx solid #c59a76;
+          padding: 5rpx 20rpx;
+          z-index: 9999;
+          display: inline-block;
+          color: #c59a76;
+          border-radius: 15rpx;
+          box-sizing: border-box;
+          font-size: 30rpx;
+        }
+        .deltop {
+          display: inline-block;
+          float: right;
+          // border: 2rpx solid #c59a76;
+          padding: 5rpx 20rpx;
+          z-index: 9999;
+          display: inline-block;
+          color: white;
+          background-color: #c59a76;
+          border-radius: 15rpx;
+          font-size: 30rpx;
+        }
+      }
 
-				.name {
-					position: absolute;
-					top: 50%;
-					transform: translate(0, -50%);
-					left: 150rpx;
-					font-weight: 700;
-				}
+      .phone {
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        left: 330rpx;
+      }
 
-				.doc_name {
-					position: absolute;
-					top: 50%;
-					transform: translate(0, -50%);
-					right: 65rpx;
-					font-weight: 700;
-					font-size: 30rpx;
-				}
+      .point {
+        width: 16rpx;
+        height: 26rpx;
+        position: absolute;
+        top: 50%;
+        transform: translate(0, -50%);
+        right: 30rpx;
+        vertical-align: top;
 
-				.phone {
-					position: absolute;
-					top: 50%;
-					transform: translate(0, -50%);
-					left: 330rpx;
-				}
+        image {
+          width: 100%;
+          height: 100%;
+          vertical-align: top;
+        }
+      }
+    }
 
-				.point {
-					width: 16rpx;
-					height: 26rpx;
-					position: absolute;
-					top: 50%;
-					transform: translate(0, -50%);
-					right: 30rpx;
-					vertical-align: top;
+    .none {
+      padding: 50rpx;
 
-					image {
-						width: 100%;
-						height: 100%;
-						vertical-align: top;
-					}
-				}
-			}
+      .img {
+        width: 550rpx;
+        height: 406rpx;
+        margin: 0 auto;
 
-			.none {
-				padding: 50rpx;
+        image {
+          width: 100%;
+          height: 100%;
+        }
+      }
 
-				.img {
-					width: 550rpx;
-					height: 406rpx;
-					margin: 0 auto;
-
-					image {
-						width: 100%;
-						height: 100%;
-					}
-				}
-
-				.txt {
-					text-align: center;
-					margin-top: -50rpx;
-				}
-			}
-		}
-	}
+      .txt {
+        text-align: center;
+        margin-top: -50rpx;
+      }
+    }
+  }
+}
 </style>

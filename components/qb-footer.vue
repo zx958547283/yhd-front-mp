@@ -1,6 +1,6 @@
 <template>
 	<view class="footer">
-		<block v-for="(item, index) of items" :key="index">
+		<block v-for="(item, index) of items" :key="index" v-if="item.meta">
 			<view class="footer_item" @tap.stop="jump(item.url)" hover-class="none">
 				<view class='footer_item_icon' :class="choose == index ? 'is_select_icon_' + index: 'un_select_icon_' + index"></view>
 				<text class='footer_item_text' :class="choose == index ? 'is_select_text': 'un_select_text'">{{item.name}}</text>
@@ -12,15 +12,25 @@
 <script>
 	export default {
 		data() {
+			const jxs = uni.getStorageSync('depts')
 			return {
 				items: [{
 					name: "首页",
 					url: '../home/home',
+					meta:true
+				},
+				{
+					name:'数据中心',
+					url:'../jxs/jxs',
+					// meta: jxs.length==0?false:true,
+					meta: false
 				},
 				{
 					name: "我的",
 					url: '../mine/mine',
-				}]
+					meta:true
+				}
+				]
 			}
 		},
 		props:{
@@ -32,6 +42,7 @@
 		onLoad(options) {},
 		methods: {
 			jump(url) {
+				console.log(url)
 				uni.switchTab({
 				 		url: url
 				 	});
@@ -92,10 +103,18 @@
 			background-size: 100% 100%;
 		}
 		.is_select_icon_1 {
-			background: url("../static/tabbar/my_active.png") no-repeat;
+			background: url("../static/tabbar/sj.png") no-repeat;
 			background-size: 100% 100%;
 		}
 		.un_select_icon_1 {
+			background: url("../static/tabbar/sj.png") no-repeat;
+			background-size: 100% 100%;
+		}
+		.is_select_icon_2 {
+			background: url("../static/tabbar/my_active.png") no-repeat;
+			background-size: 100% 100%;
+		}
+		.un_select_icon_2 {
 			background: url("../static/tabbar/mine.png") no-repeat;
 			background-size: 100% 100%;
 		}
