@@ -33,12 +33,12 @@ import txl from "@/components/yt-txl/index.vue";
 export default {
   components: {
     uniSearchBar,
-    txl
+    txl,
   },
   onLoad(option) {
-    if(option.index){
-		this.currenttab = option.index;
-	}
+    if (option.index) {
+      this.currenttab = option.index;
+    }
     this.isAdmin = uni.getStorageSync("isAdmin");
     var that = this;
     uni.getSystemInfo({
@@ -49,7 +49,7 @@ export default {
         let view = uni.createSelectorQuery().select(".tab");
         // console.log(view)
         view
-          .boundingClientRect(data => {
+          .boundingClientRect((data) => {
             let navHeight = data.height;
             // console.log(res.windowHeight)
             console.log(navHeight);
@@ -57,7 +57,7 @@ export default {
             console.log(that.hei, "hei");
           })
           .exec();
-      }
+      },
     });
   },
   onShow() {
@@ -97,7 +97,7 @@ export default {
       three_total: 0, //收藏客户总量
       one: 0,
       two: 1,
-      three: 3
+      three: 3,
     };
   },
   methods: {
@@ -113,7 +113,7 @@ export default {
     //跳转详情页
     getdetail(id) {
       uni.navigateTo({
-        url: "/pages/detail/detail?add=" + id + "&manage=1"
+        url: "/pages/detail/detail?add=" + id + "&manage=1",
       });
     },
     // 获取我的客户
@@ -124,13 +124,12 @@ export default {
         admin_user_id: uni.getStorageSync("admin_user_id"), //员工id
         search_key: this.searchValue, // 条件
         startIndex: this.startIndex, // 开始页面
-        pagesize: this.pagesize // 每页条数
+        pagesize: this.pagesize, // 每页条数
       };
-      // 测试用
       pakTool
         .request(this, "/madyApp/getMineCustomer", requestPak)
-        .then(res => {
-          const { data } = res;
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":{"customerList":[{"member_id":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","employeeName":"B1健康专员","customer_header":"","phone":"13777777985","customerName":"完整数据","is_top":1}],"customerCnt":1}}
           this.tabtwo = [];
           data.customerList.map((item, index) => {
             this.tabtwo.push({
@@ -138,7 +137,7 @@ export default {
               employeeName: item.customerName,
               departmentName: item.phone,
               isTop: item.is_top,
-              customer_header: item.customer_header
+              customer_header: item.customer_header,
             });
           });
           this.two_total = data.customerCnt;
@@ -149,53 +148,57 @@ export default {
       this.startIndex = 1;
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
-        admin_user_id: uni.getStorageSync("admin_user_id")
+        admin_user_id: uni.getStorageSync("admin_user_id"),
       };
-      // 测试用
-      pakTool.request(this, "/madyApp/getMineCollect", requestPak).then(res => {
-        const { data } = res;
-        this.tabthree = [];
-        data.customerList.map((item, index) => {
-          this.tabthree.push({
-            employeeId: item.member_id,
-            employeeName: item.customerName,
-            departmentName: item.phone,
-            isTop: item.is_top,
-            customer_header: item.customer_header
+      pakTool
+        .request(this, "/madyApp/getMineCollect", requestPak)
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":{"customerList":[{"member_id":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","employeeName":"B1健康专员","customer_header":"","phone":"13777777985","customerName":"完整数据","is_top":1}],"customerCnt":1}}
+          const { data } = res;
+          this.tabthree = [];
+          data.customerList.map((item, index) => {
+            this.tabthree.push({
+              employeeId: item.member_id,
+              employeeName: item.customerName,
+              departmentName: item.phone,
+              isTop: item.is_top,
+              customer_header: item.customer_header,
+            });
           });
+          this.three_total = data.customerCnt;
         });
-        this.three_total = data.customerCnt;
-      });
     },
 
-    //获取店长门店数据
+    //获取门店客户数据
     allUser() {
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
         admin_user_id: uni.getStorageSync("admin_user_id"), //员工id
         search_key: this.searchValue, // 条件
         startIndex: this.all_startIndex, // 开始页面
-        pagesize: this.pagesize // 每页条数
+        pagesize: this.pagesize, // 每页条数
       };
-      // 测试用
-      pakTool.request(this, "/madyApp/getAllCustomer", requestPak).then(res => {
-        const { data } = res;
-        this.tabone = [];
-        data.customerList.map((item, index) => {
-          this.tabone.push({
-            employeeId: item.id,
-            employeeName: item.customerName,
-            departmentName: item.phone,
-            isTop: item.is_top,
-            customer_header: item.customer_header
+      pakTool
+        .request(this, "/madyApp/getAllCustomer", requestPak)
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":{"customerList":[{"employeeName":"B1健康专员","customer_header":"","phone":"13777777985","id":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","customerName":"完整数据","is_top":1},{"employeeName":"B1健康专员","customer_header":"","phone":"13999999999","id":"95d36d1d-ecd7-4a27-ba2d-b78286af3b15","customerName":"测试","is_top":1}],"customerCnt":2}}
+          const { data } = res;
+          this.tabone = [];
+          data.customerList.map((item, index) => {
+            this.tabone.push({
+              employeeId: item.id,
+              employeeName: item.customerName,
+              departmentName: item.phone,
+              isTop: item.is_top,
+              customer_header: item.customer_header,
+            });
           });
+          this.one_total = data.customerCnt;
         });
-        this.one_total = data.customerCnt;
-      });
     },
     evFunc(e) {
       uni.navigateTo({
-        url: "/pages/detail/detail?add=" + e.employeeId
+        url: "/pages/detail/detail?add=" + e.employeeId,
       });
     },
 
@@ -208,19 +211,19 @@ export default {
         let requestPak = pakTool.createRequestPak();
         requestPak.requestBody = {
           isTop: 1,
-          member_id: id
+          member_id: id,
         };
-        pakTool.request(this, "madyApp/setTop", requestPak).then(res => {
+        pakTool.request(this, "madyApp/setTop", requestPak).then((res) => {
           if (res.code == 200) {
             uni.showToast({
               title: "收藏成功",
-              success: function() {
+              success: function () {
                 that.myUser();
                 that.colUser();
                 if (that.isAdmin == "Y") {
                   that.allUser();
                 }
-              }
+              },
             });
             // this.getShowUser()
             // if(this.isAdmin=='Y'){
@@ -232,19 +235,19 @@ export default {
         let requestPak = pakTool.createRequestPak();
         requestPak.requestBody = {
           isTop: 0,
-          member_id: id
+          member_id: id,
         };
-        pakTool.request(this, "madyApp/setTop", requestPak).then(res => {
+        pakTool.request(this, "madyApp/setTop", requestPak).then((res) => {
           if (res.code == 200) {
             uni.showToast({
               title: "取消收藏成功",
-              success: function() {
+              success: function () {
                 that.myUser();
                 that.colUser();
                 if (that.isAdmin == "Y") {
                   that.allUser();
                 }
-              }
+              },
             });
           }
         });
@@ -253,8 +256,8 @@ export default {
     collection(val) {
       console.log(val);
       this.settop(val.top, val.id);
-    }
-  }
+    },
+  },
 };
 </script>
 

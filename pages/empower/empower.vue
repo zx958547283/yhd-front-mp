@@ -20,9 +20,9 @@
       </view>
     </view>
     <view style="width: 100%;margin-top: 232rpx;">
-    	<view class="empower-bg">
-    			授权登录
-    	</view>
+      <view class="empower-bg">
+        授权登录
+      </view>
     </view>
     <!-- 导航 -->
     <view class="footer">
@@ -66,12 +66,35 @@ import pakTool from "../../common/utils/utility.js";
 import { mapState, mapMutations } from "vuex";
 export default {
   components: {
-    uniPopup
+    uniPopup,
   },
   data() {
     return {
-      piclist: [], // 轮播图
-      code: ""
+      piclist: [
+        // {
+        //   click_count: "0",
+        //   create_time: null,
+        //   create_user: "1",
+        //   dr: "0",
+        //   edit_time: "2020-07-23 17:24:39.0",
+        //   edit_user: "1",
+        //   end_time: "2020-02-29 02:01:37.0",
+        //   exc_key: "8",
+        //   id: "2",
+        //   name: "积分说明",
+        //   note: "前贝学堂介绍",
+        //   order_count: "0",
+        //   pic:
+        //     "http://xiaode.oos-cn.ctyunapi.cn/20200723/png/yhd/upload/202007231724353321153.png",
+        //   sort: "0",
+        //   start_time: "2018-11-13 14:01:37.0",
+        //   status: "1",
+        //   type: "0",
+        //   url:
+        //     "https://www.laohaowaner.com/qbresource/qb_study/score_intro.mp4",
+        // },
+      ], // 轮播图
+      code: "",
     };
   },
 
@@ -94,19 +117,19 @@ export default {
     if (admin_id && wxMemberId) {
       console.log("21312312222222222222222222");
       uni.switchTab({
-        url: "/pages/home/home"
+        url: "/pages/home/home",
       });
     } else {
       if (uni.getStorageSync("user")) {
         // 如果已有缓存则直接进首页
         uni.showLoading({
-          title: "登陆中..."
+          title: "登陆中...",
         });
         // app.globalData.userInfo = uni.getStorageSync("user");
         setTimeout(() => {
           uni.hideLoading();
           uni.redirectTo({
-            url: "/pages/login/login"
+            url: "/pages/login/login",
           });
         }, 500);
       } else {
@@ -124,11 +147,11 @@ export default {
       let requestPak = pakTool.createRequestPak();
       console.log(requestPak);
       requestPak.requestBody = {
-        encryptedData: ""
+        encryptedData: "",
       };
       pakTool
         .request(this, "/madyApp/getHomePageInfo", requestPak)
-        .then(res => {
+        .then((res) => {
           const { data } = res;
           this.piclist = data.advertise;
         });
@@ -144,7 +167,7 @@ export default {
     // 微信登录 获取sessionKey
     getWxSessionKey() {
       wx.login({
-        success: res => {
+        success: (res) => {
           console.log(res);
           this.code = res.code;
           let requestPak = pakTool.createRequestPak();
@@ -153,12 +176,12 @@ export default {
             encryptedData: "",
             iv: "",
             code: res.code,
-            shareUserId: 1
+            shareUserId: 1,
           };
           pakTool
             .request(this, "customerApp/getWxSessionKey", requestPak)
             .then();
-        }
+        },
       });
     },
     // 获取用户信息时
@@ -177,14 +200,14 @@ export default {
         encryptedData: e.detail.encryptedData,
         iv: e.detail.iv,
         code: that.code,
-        shareUserId: 1
+        shareUserId: 1,
       };
       console.log("-------------weixinLogin---------");
       console.log(requestPak);
       pakTool.requestRest(
         requestPak,
         "customerApp/weixinLogin",
-        function(responsePak) {
+        function (responsePak) {
           console.log(responsePak, 999999);
           console.log(responsePak.resultBody);
           if (responsePak.resultBody) {
@@ -192,19 +215,19 @@ export default {
             // app.globalData.userInfo = responsePak.resultBody.wxUserInfo;
             uni.setStorageSync("user", responsePak.resultBody);
             uni.redirectTo({
-              url: "/pages/login/login"
+              url: "/pages/login/login",
             });
           } else {
-            uni.showToast({
+            wx.showToast({
               icon: "none",
-              title: responsePak.resultBody.message
+              title: responsePak.resultBody.message,
             });
           }
         },
-        function(err) {
-          uni.showToast({
+        function (err) {
+          wx.showToast({
             icon: "none",
-            title: err.msg //'服务器开小差，请重试~',
+            title: err.msg, //'服务器开小差，请重试~',
           });
         }
       );
@@ -215,10 +238,10 @@ export default {
       uni.showToast({
         title: "取消授权",
         icon: "none",
-        duration: 1500
+        duration: 1500,
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -242,17 +265,17 @@ export default {
   }
   .empower-bg {
     width: 640rpx;
-	height: 76rpx;
+    height: 76rpx;
     box-sizing: border-box;
     // display: flex;
     // justify-content: center;
     // align-items: center;
-	background: #c59a76;
-	border-radius: 42rpx;
-	color: #fff;
-	text-align: center;
-	line-height: 76rpx;
-	margin: 0 auto;
+    background: #c59a76;
+    border-radius: 42rpx;
+    color: #fff;
+    text-align: center;
+    line-height: 76rpx;
+    margin: 0 auto;
   }
 
   .detail {
@@ -402,7 +425,7 @@ export default {
       color: #333333;
       margin: 50% auto 0;
       text-align: center;
-	  font-size: 34rpx;
+      font-size: 34rpx;
     }
 
     .btm {
@@ -413,10 +436,10 @@ export default {
 
       .yes {
         // padding: 5rpx 30rpx;
-		width: 237rpx;
-		height: 82rpx;
-		line-height: 82rpx;
-		text-align: center;
+        width: 237rpx;
+        height: 82rpx;
+        line-height: 82rpx;
+        text-align: center;
         display: inline-block;
         background-color: #c59a76;
         color: white;
@@ -426,10 +449,10 @@ export default {
 
       .no {
         // padding: 5rpx 30rpx;
-		width: 237rpx;
-		height: 82rpx;
-		line-height: 82rpx;
-		text-align: center;
+        width: 237rpx;
+        height: 82rpx;
+        line-height: 82rpx;
+        text-align: center;
         background-color: #ffffff;
         display: inline-block;
         color: #c59a76;

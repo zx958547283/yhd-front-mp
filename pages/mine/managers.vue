@@ -60,7 +60,7 @@ import pakTool from "@/common/utils/utility.js"; // 调用接口
 export default {
   components: {
     uniSearchBar,
-    uniPopup
+    uniPopup,
   },
   onReady() {
     // 获取店长信息
@@ -76,7 +76,7 @@ export default {
       // 没有更多数据了，给一个提示，终止后续的接口调用
       uni.showToast({
         title: "没有更多数据了",
-        icon: "none"
+        icon: "none",
       });
       return;
     }
@@ -124,7 +124,7 @@ export default {
       totalRows: 0,
       id: "",
       status: "",
-      index: 0
+      index: 0,
     };
   },
   computed: {},
@@ -138,11 +138,12 @@ export default {
     getManage() {
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
-        is_who: "dz"
+        is_who: "dz",
       };
       pakTool
         .request(this, "/madyApp/getEmployeeData", requestPak)
-        .then(res => {
+        .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":[{"id":"27f08738-e716-44b4-9d12-738096bf452f","organization_id":"1","company_id":"1","depart_id":"5f8a70d1-86e5-444c-b1a9-d1f0a80298fe","code":"dz001","username":"B1店 店长","icon":null,"email":null,"nick_name":null,"mobile":"13245678900","isadmin":"N","is_dealer":null,"is_server":null,"is_healther":null,"isdoctor":"0","tmclound_userid":null,"note":null,"login_time":null,"refresh_token":null,"status":"N","create_user":"89c22367-1c6a-489d-90ee-c9a0467109aa","create_time":"2020-07-27 15:43:18.0","edit_user":"89c22367-1c6a-489d-90ee-c9a0467109aa","edit_time":"2020-07-27 15:43:53.0","exc_key":"2","dr":"0","customerCnt":null}]}
           let { data } = res;
           this.clist = data;
           this.amount = data.length;
@@ -158,7 +159,7 @@ export default {
           "&mobile=" +
           mobile +
           "&username=" +
-          username
+          username,
       });
       console.log(`店长id= ${id}, 手机号= ${mobile}, 姓名= ${username}`);
     },
@@ -176,11 +177,11 @@ export default {
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
         employeeId: id, // 店长id
-        status: status // 店长状态
+        status: status, // 店长状态
       };
       pakTool
         .request(this, "/madyApp/saveEmployeeStatus", requestPak)
-        .then(res => {
+        .then((res) => {
           const { data, code } = res;
           if (code == 200) {
             this.$refs.popup.close();
@@ -220,8 +221,8 @@ export default {
       this.status = status;
       this.index = index;
       this.$refs.popup.open();
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -265,7 +266,7 @@ export default {
         .name {
           height: 45rpx;
           line-height: 45rpx;
-		  margin-bottom: 15rpx;
+          margin-bottom: 15rpx;
         }
 
         .number {

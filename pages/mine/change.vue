@@ -21,7 +21,7 @@ export default {
       userPhone: "", // 手机
       id: "", // 账户id
       head: "", // 头像
-      head_url: "" // 传后台
+      head_url: "", // 传后台
     };
   },
   onLoad(option) {
@@ -37,7 +37,7 @@ export default {
         uni.showToast({
           title: "手机号码有误，请重填",
           icon: "none",
-          duration: 2000
+          duration: 2000,
         });
         return false;
       }
@@ -45,28 +45,30 @@ export default {
       requestPak.requestBody = {
         id: this.id, // 账户id
         mobile: this.userPhone, // 手机
-        username: this.userName // 姓名
+        username: this.userName, // 姓名
       };
-      pakTool.request(this, "customerApp/updateAdmin", requestPak).then(res => {
-        const { data, code, message } = res;
-        if (code == 200) {
-          uni.showToast({
-            title: "保存成功",
-            success: function() {
-              uni.switchTab({
-                url: "/pages/mine/mine"
-              });
-            }
-          });
-        } else {
-          uni.showToast({
-            title: message,
-            icon: "none"
-          });
-        }
-      });
-    }
-  }
+      pakTool
+        .request(this, "customerApp/updateAdmin", requestPak)
+        .then((res) => {
+          const { data, code, message } = res;
+          if (code == 200) {
+            uni.showToast({
+              title: "保存成功",
+              success: function () {
+                uni.switchTab({
+                  url: "/pages/mine/mine",
+                });
+              },
+            });
+          } else {
+            uni.showToast({
+              title: message,
+              icon: "none",
+            });
+          }
+        });
+    },
+  },
 };
 </script>
 
