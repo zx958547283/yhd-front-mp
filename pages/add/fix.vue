@@ -52,8 +52,7 @@
           </view>
           <view class="select_date">
             <picker mode="date" :value="date" :start="startDate" :end="endDate" @change="bindDateChange">
-              <view class="date">{{date==null?'':date}}
-                <image src="../../static/images/cher.png" mode="" class="point"></image>
+              <view class="date">{{date==null?'':date}} <image src="../../static/images/cher.png" mode="" class="point"></image>
               </view>
             </picker>
           </view>
@@ -82,6 +81,7 @@
 			</view>
 		<!-- 表单中部 -->
 		<view class="add_mid">
+			  		
 					<view class="tag">
 						<view class="thread">
 							<view class="title" @click="addtag">
@@ -513,6 +513,7 @@ export default {
       pakTool
         .request(this, "/madyApp/getCustomerCenter", requestPak)
         .then((res) => {
+          // {"ok":true,"message":"","pk":null,"code":"200","data":{"doctor":"张","targs":[],"server":"张","memberInfo":{"id":"985be3eb-67df-484d-8bac-a096601b54ca","organization_id":"1","company_id":null,"depart_id":"5f8a70d1-86e5-444c-b1a9-d1f0a80298fe","parent_id":null,"depth":null,"rgt":null,"lft":null,"team_id":null,"member_level_id":null,"username":null,"password":null,"nickname":"马大力","real_name":"马大力","phone":"13382018111","status":null,"icon":"","gender":"1","birthday":null,"province":null,"city":null,"area":null,"job":null,"personalized_signature":null,"source_type":null,"integration":null,"growth":null,"luckey_count":null,"history_integration":null,"wx_openId":null,"wx_union_id":null,"employee_flg":"0","employee_id":null,"qr_code":null,"id_card":"","email":"","create_user":"a1d8dc02-ca53-4f1b-b3c8-aa5590129eab","create_time":"2020-07-01 17:40:43.0","edit_user":"1","edit_time":"2020-08-14 17:43:42.0","exc_key":"13","dr":"0","address":"","height":"","weight":"","left_eye":"","right_eye":"","member_tag":"","surplus_amount":"0.00","comment":"","store_name":null,"from_employee":"a1d8dc02-ca53-4f1b-b3c8-aa5590129eab","surplus_times":"-2","lunar":"","is_top":1,"service_admin_id":"a1d8dc02-ca53-4f1b-b3c8-aa5590129eab"},"totalConsumeCnt":2,"surplusCnt":-2,"totalDepositCnt":0}}
           const { data } = res;
           console.log(data);
           this.head = data.memberInfo.icon;
@@ -537,20 +538,30 @@ export default {
             this.dpts_code = sel_dept.id;
             this.getTaiUsed(this.dpts_code, data.memberInfo.create_user);
           }
-          this.doc_list.map((item) => {
-            if (item.name == doct) {
-              this.doc = this.doc_list.indexOf(item);
-              this.doc_name = this.doc_list[this.doc].name;
-              this.doc_code = this.doc_list[this.doc].value;
-            }
-            if (item.value == service) {
-              const sel_ser = this.ser_list.find(
-                (num) => num.value === item.value
-              );
-              this.ser_name = sel_ser.name;
-              this.ser_code = sel_ser.value;
-            }
-          });
+          if (this.isAdmin == "N") {
+            this.doc_code = data.memberInfo.from_employee;
+            this.ser_code = data.memberInfo.service_admin_id;
+          }
+          if (this.doc_list.length != 0) {
+            this.doc_list.map((item) => {
+              if (item.name == doct) {
+                this.doc = this.doc_list.indexOf(item);
+                this.doc_name = this.doc_list[this.doc].name;
+                this.doc_code = this.doc_list[this.doc].value;
+              }
+            });
+          }
+          if (this.ser_list.length != 0) {
+            this.ser_list.map((item) => {
+              if (item.value == service) {
+                const sel_ser = this.ser_list.find(
+                  (num) => num.value === item.value
+                );
+                this.ser_name = sel_ser.name;
+                this.ser_code = sel_ser.value;
+              }
+            });
+          }
           this.tagarr_fix = data.memberInfo.member_tag;
           this.date = data.memberInfo.birthday;
           this.lunar = data.memberInfo.lunar;
@@ -568,7 +579,6 @@ export default {
       pakTool
         .request(this, "madyApp/getDeptEmployee", requestPak)
         .then((res) => {
-          // {"ok":true,"message":"","pk":null,"code":"200","data":[{"id":"260c23c4-2a79-4a27-bdc7-0d2a10324295","organization_id":"1","company_id":"1","depart_id":"5f8a70d1-86e5-444c-b1a9-d1f0a80298fe","code":"0001","username":"B1服务专员","icon":null,"email":null,"nick_name":null,"mobile":null,"isadmin":"N","is_dealer":null,"is_server":"1","is_healther":"0","isdoctor":"1","tmclound_userid":null,"note":null,"login_time":null,"refresh_token":null,"status":"Y","create_user":"89c22367-1c6a-489d-90ee-c9a0467109aa","create_time":"2020-07-27 14:09:27.0","edit_user":"89c22367-1c6a-489d-90ee-c9a0467109aa","edit_time":"2020-07-27 14:11:24.0","exc_key":"2","dr":"0","customerCnt":null},{"id":"d139f4dc-6961-4b71-b653-eacd66996e2c","organization_id":"1","company_id":"1","depart_id":"5f8a70d1-86e5-444c-b1a9-d1f0a80298fe","code":"0002","username":"B1健康专员","icon":null,"email":null,"nick_name":null,"mobile":null,"isadmin":"N","is_dealer":null,"is_server":null,"is_healther":"1","isdoctor":"1","tmclound_userid":null,"note":null,"login_time":null,"refresh_token":null,"status":"Y","create_user":"89c22367-1c6a-489d-90ee-c9a0467109aa","create_time":"2020-07-27 14:10:43.0","edit_user":"89c22367-1c6a-489d-90ee-c9a0467109aa","edit_time":"2020-07-27 14:11:24.0","exc_key":"1","dr":"0","customerCnt":null}]}
           const { data } = res;
           this.tai_list = [];
           console.log(res);

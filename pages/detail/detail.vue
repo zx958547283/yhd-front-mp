@@ -167,11 +167,11 @@ export default {
       pk_question: "", // 答题数据id
       surplusCnt: 0, // 剩余次数
       totalConsumeCnt: 0, // 消费次数
-      totalDepositCnt: 0, // 充值次数
+      totalDepositCnt: 0 // 充值次数
     };
   },
   components: {
-    uniPopup,
+    uniPopup
   },
   onLoad(option) {
     // 将登客户信息缓存
@@ -195,7 +195,7 @@ export default {
     //修改资料
     fix() {
       uni.navigateTo({
-        url: "/pages/add/fix?id=" + this.id,
+        url: "/pages/add/fix?id=" + this.id
       });
     },
     // 健康测评
@@ -208,12 +208,12 @@ export default {
             "/pages/evaluation/healthResult?id=" +
             this.id +
             "&pk_question=" +
-            this.pk_question,
+            this.pk_question
         });
       } else {
         // 未体检过
         uni.navigateTo({
-          url: "/pages/evaluation/evaluation?id=" + this.id,
+          url: "/pages/evaluation/evaluation?id=" + this.id
         });
       }
     },
@@ -225,13 +225,13 @@ export default {
       let requestPak = pakTool.createRequestPak();
       requestPak.requestBody = {
         member_id: this.id, // 客户id
-        admin_user_id: uni.getStorageSync("admin_user_id"), // 登录员工id
+        admin_user_id: uni.getStorageSync("admin_user_id") // 登录员工id
       };
       pakTool
         .request(this, "/madyApp/getCustomerCenter", requestPak)
-        .then((res) => {
-          // {"ok":true,"message":"","pk":null,"code":"200","data":{"doctor":"B1健康专员","targs":["超级VIP","潜力客户","线上"],"server":"B1服务专员","memberInfo":{"id":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","organization_id":null,"company_id":null,"depart_id":"5f8a70d1-86e5-444c-b1a9-d1f0a80298fe","parent_id":null,"depth":null,"rgt":null,"lft":null,"team_id":null,"member_level_id":null,"username":null,"password":null,"nickname":null,"real_name":"完整数据","phone":"13777777985","status":null,"icon":"","gender":"1","birthday":"1999-01-01","province":null,"city":null,"area":null,"job":null,"personalized_signature":null,"source_type":null,"integration":null,"growth":null,"luckey_count":null,"history_integration":null,"wx_openId":null,"wx_union_id":null,"employee_flg":"0","employee_id":null,"qr_code":null,"id_card":"32010019990101456X","email":"9@qq.com","create_user":"89c22367-1c6a-489d-90ee-c9a0467109aa","create_time":"2020-07-27 14:47:12.0","edit_user":null,"edit_time":"2020-07-27 14:56:51.0","exc_key":"3","dr":"0","address":"家庭住址","height":"123","weight":"23","left_eye":"123","right_eye":"123","member_tag":"tag1&&9f89080b-c59a-46e4-8bea-5ff30e04ece6,tag2&&b743c66c-a090-11ea-a951-506b4bc21cca,tag3&&cf115f03-a090-11ea-a951-506b4bc21cca","surplus_amount":"100.00","comment":"","store_name":null,"from_employee":"d139f4dc-6961-4b71-b653-eacd66996e2c","surplus_times":"6","lunar":"冬月十四","is_top":1,"service_admin_id":"260c23c4-2a79-4a27-bdc7-0d2a10324295"},"totalConsumeCnt":4,"questionScore":{"pk_questionScore":"d46c957b-cabf-4ea2-a084-1b423b89ef77","fk_customer":"b0e964f2-384d-4dc8-91fd-3b45bb7b60de","identification_time":"2020-07-27 14:52:40"},"surplusCnt":6,"totalDepositCnt":10}}
+        .then(res => {
           const data = res.data;
+
           if (data) {
             this.userImg = data.memberInfo.icon;
             this.userName = data.memberInfo.real_name;
@@ -247,9 +247,9 @@ export default {
               this.manage = 0;
             }
             this.tagarr = [];
-            data.targs.map((item) => {
+            data.targs.map(item => {
               this.tagarr.push({
-                name: item,
+                name: item
               });
             }); // 更改tag数据格式
             console.log(this.tagarr, "tagarr");
@@ -262,7 +262,7 @@ export default {
               date: this.userDate,
               mail: this.userMail,
               address: this.userAddress,
-              card: this.userCard,
+              card: this.userCard
             };
             this.$store.commit("savecustomer", this.form);
             // 判断是否健康测评过
@@ -281,8 +281,8 @@ export default {
             console.log("getCustomerCenter()接口数据为空。");
           }
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -497,11 +497,11 @@ export default {
 
     .yes {
       position: absolute;
-      width: 237rpx;
-      height: 82rpx;
-      line-height: 82rpx;
-      text-align: center;
-      font-size: 34rpx;
+	  width: 237rpx;
+	  height: 82rpx;
+	  line-height: 82rpx;
+	  text-align: center;
+	  font-size: 34rpx;
       // padding: 18rpx 60rpx;
       bottom: 15%;
       left: 50%;

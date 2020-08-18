@@ -3,14 +3,15 @@
 		<view class="cell_left" v-if="title">
 			{{title}}
 		</view>
-		<view class="cell_right" v-if="num">
+		<view class="cell_right" v-if="num" :class="sta==1?'gre':sta==2?'blu':sta==3?'bla':sta==4?'red':sta==5?'red':''">
 			{{num}}<text style="margin-left: 30rpx;" v-if="unit">{{unit}}</text>
 		</view>
 	</view>
 </template>
 <script>
 	export default{
-		props:['title','num','unit','bor']
+		props:['title','num','unit','bor','sta'],
+		
 	}
 	
 </script>
@@ -27,6 +28,18 @@
 		}
 		.cell_right{
 			flex: 3;
+		}
+		.gre{
+			color: #4CD964;
+		}
+		.red{
+			color:red;
+		}
+		.bla{
+			color: #F37B1D;
+		}
+		.blu{
+			color: #00BFFF;
 		}
 	}
 </style>
